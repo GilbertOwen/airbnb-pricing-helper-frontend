@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌐 Airbnb Pricing Helper — Frontend (Next.js + React + TypeScript)
 
-## Getting Started
+Next.js frontend untuk interaksi dengan backend AI (price recommendation + booking simulation).
 
-First, run the development server:
+---
 
-```bash
+## Daftar Isi
+1. [Ringkasan](#ringkasan)
+2. [Tech Stack](#tech-stack)
+3. [Struktur Folder](#struktur-folder)
+4. [Instalasi & Menjalankan (Local)](#instalasi--menjalankan-local)
+5. [Konfigurasi API](#konfigurasi-api)
+6. [Fitur & Flow UI](#fitur--flow-ui)
+7. [UX / Testing Suggestions](#ux--testing-suggestions)
+8. [Deployment](#deployment)
+9. [Limitations](#limitations)
+10. [Lisensi](#lisensi)
+
+---
+
+## Ringkasan
+UI yang sederhana untuk:
+- Input detail listing (example / custom)
+- Mendapat rekomendasi harga dari backend
+- Mensimulasikan probabilitas booking 7-hari
+
+---
+
+## Tech Stack
+- **Framework:** Next.js (App Router)
+- **Library:** React + TypeScript
+- **Styling:** Tailwind CSS
+- **Components:** shadcn/ui (design primitives)
+- **Data Fetching:** Fetch API (native)
+
+---
+
+## Struktur Folder
+
+frontend/
+├── app/
+│   └── page.tsx            # Main page / route
+├── components/
+│   └── ui/                 # shadcn components
+├── public/
+├── styles/
+├── package.json
+└── README.md
+
+## Instalasi & Menjalankan (Local)
+### 1. Install dependencies
+
+npm install
+
+### 2. Run dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka browser di: http://localhost:3000
+Konfigurasi API
+Cari konstanta konfigurasi API (biasanya di file utils atau di dalam komponen utama):
+const API_BASE_DEFAULT = "http://localhost:8000";
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Pastikan Backend:
+ * Sudah running.
+ * Mengizinkan origin frontend lewat konfigurasi CORS.
+Fitur & Flow UI
+1. Example Listing
+ * Pilih row_index (dari dataset) → panggil POST /recommend_by_index.
+ * Berguna untuk demo / testing end-to-end tanpa input manual.
+2. Custom Listing
+ * Form input: room_type, accommodates, bathrooms, amenities, latitude, longitude, instant_bookable, minimum_nights, dll.
+ * Submit → POST /recommend_from_features.
+3. Booking Simulation
+ * Input: base_price, start_date, row_index atau anchor.
+ * Submit → POST /booking_week_by_index.
+ * Tampilkan: Probabilitas per hari & ringkasan 7-hari (grafik).
+4. Result UI
+ * Menampilkan recommended_price, price_bucket, dan explanations (kontribusi fitur).
+ * Grafik sederhana untuk probabilitas booking (bar chart).
+UX / Testing Suggestions
+ * Validasi: Client-side validation untuk fields (required, numeric ranges).
+ * Demo: Tombol “Use example listing” untuk pengisian otomatis.
+ * Feedback: Loading state & error handling yang jelas (toast / inline message).
+ * Testing: Unit tests dengan mock API responses untuk komponen utama (recommendation, booking chart).
+Deployment
+ * Platform: Vercel / Netlify / Cloudflare Pages (Static/Edge).
+ * Penting: Backend harus dideploy terpisah. Pastikan variabel API_BASE di frontend diarahkan ke URL produksi backend (bukan localhost).
+Limitations
+ * Stateless: Frontend tidak menyimpan state persisten; semua inference ada di backend.
+ * Approximation: Booking simulation untuk custom listing menggunakan nearest dataset peer.
+ * Market: Backend & model assumption hanya valid untuk market Seattle.
+Lisensi
+Academic / Educational Use
